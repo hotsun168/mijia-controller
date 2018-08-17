@@ -1,0 +1,32 @@
+{
+    //Web服务器配置项。
+    "webServer": {
+        //Web端口。
+        "port": 12345,
+        //Auth用户名。
+        "userName": "admin",
+        //Auth密码。
+        "password": "admin"
+    },
+    //网关配置项
+    "gateways": [
+        {
+            //网关名称（自定义）。
+            "name": "客厅网关",
+            //网关Sid。
+            "sid": "...",
+            //网关通信密码。
+            "password": "...",
+            //网关在米家APP中的信息。
+            "appInfo": {
+                "...": "..."
+            },
+            //子设备配置项。
+            "subDeviceInfo": [
+                {
+                    "...": "..."
+                }
+            ]
+        }
+    ]
+}
