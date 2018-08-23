@@ -3,6 +3,7 @@ package device
 import (
 	"../config"
 	"../crypto"
+	"../notify"
 	"../utils"
 	"encoding/hex"
 	"encoding/json"
@@ -34,46 +35,46 @@ const (
 
 //网关。
 type Gateway struct {
-	Sid           string
-	Name          string
-	ShortId       int
-	Model         string
+	Sid     string
+	Name    string
+	ShortId int
+	Model   string
 	//协议版本。
-	ProtoVersion  string
+	ProtoVersion string
 	//IP地址。
-	Ip            string
+	Ip string
 	//通信Token，会依据心跳包或Iam包随时更新。
-	Token         string
+	Token string
 	//通信端口。
-	Port          int
+	Port int
 	//照度。
-	Illumination  int
+	Illumination int
 	//夜灯颜色。
-	Rgb           int
+	Rgb int
 	//子设备Sid数组。
 	SubDeviceSids []string
 }
 
 //墙壁开关单火线单键版。
 type CtrlNeutral1 struct {
-	Sid      string
-	Name     string
-	ShortId  int
-	Model    string
+	Sid     string
+	Name    string
+	ShortId int
+	Model   string
 	//电池电压（始终为3300）。
-	Voltage  int
+	Voltage int
 	//开关接通状态。
 	Channel0 bool
 }
 
 //墙壁开关单火线双键版。
 type CtrlNeutral2 struct {
-	Sid      string
-	Name     string
-	ShortId  int
-	Model    string
+	Sid     string
+	Name    string
+	ShortId int
+	Model   string
 	//电池电压（始终为3300）。
-	Voltage  int
+	Voltage int
 	//左键接通状态。
 	Channel0 bool
 	//右键接通状态。
@@ -119,21 +120,21 @@ type DoorMagnet struct {
 	//电池电压。
 	Voltage int
 	//门窗开合状态。
-	IsOpen  bool
+	IsOpen bool
 }
 
 //人体传感器。
 type Motion struct {
-	Sid             string
-	Name            string
-	ShortId         int
-	Model           string
+	Sid     string
+	Name    string
+	ShortId int
+	Model   string
 	//电池电压。
-	Voltage         int
+	Voltage int
 	//未检测到移动的延迟秒数。
 	NoMotionSeconds int
 	//是否检测到移动。
-	IsMotion        bool
+	IsMotion bool
 }
 
 //Device操作锁。
@@ -181,6 +182,7 @@ func recvData(conn *net.UDPConn) {
 		utils.ShowError(err, "Receive data error! ")
 		log.Println(len, "bytes read from", remoteAddr)
 		data := string(buf[:len])
+		notify.PushMessage(data)
 		dispatchData(data)
 	}
 }

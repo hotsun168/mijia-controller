@@ -8,6 +8,10 @@
         //Auth密码。
         "password": "admin"
     },
+    //通知地址配置。
+    "notifyUrls": [
+        "http://xxx.com/1.do"
+    ],
     //网关配置项
     "gateways": [
         {

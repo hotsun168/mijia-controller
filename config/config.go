@@ -13,6 +13,8 @@ var configInfo = ConfigInfo{}
 type ConfigInfo struct {
 	//Web服务器配置项。
 	WebServer WebServer `json:"webServer"`
+	//通知URL。
+	NotifyUrls []string `json:"notifyUrls"`
 	//网关配置项数组。
 	Gateways []GatewayInfo `json:"gateways"`
 }
@@ -101,4 +103,13 @@ func GetGatewayPasswordAndSid(subDeviceSid string) (string, string) {
 		}
 	}
 	return "", ""
+}
+
+//获取通知URL，可多个。
+func GetNotifyUrls() []string {
+	urls := make([]string, 0)
+	for _, u := range configInfo.NotifyUrls {
+		urls = append(urls, u)
+	}
+	return urls
 }
