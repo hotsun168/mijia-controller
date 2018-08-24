@@ -157,6 +157,12 @@
                 status.push("左键状态：" + (device.Channel0 ? "打开" : "关闭"));
                 status.push("右键状态：" + (device.Channel1 ? "打开" : "关闭"));
             }
+            if (device.Model == "weather.v1") {
+                status.push("电池电压：" + device.Voltage);
+                status.push("温度" + device.Temperature);
+                status.push("湿度：" + device.Humidity);
+                status.push("气压：" + device.Pressure);
+            }
             return status.join("<br/>");
         }
 

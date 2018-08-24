@@ -137,6 +137,22 @@ type Motion struct {
 	IsMotion bool
 }
 
+//Aqara温湿度度传感器。
+type Weather struct {
+	Sid     string
+	Name    string
+	ShortId int
+	Model   string
+	//电池电压。
+	Voltage int
+	//温度。
+	Temperature int
+	//湿度。
+	Humidity int
+	//气压。
+	Pressure int
+}
+
 //Device操作锁。
 var lock sync.Mutex
 
@@ -320,6 +336,8 @@ func createOrUpdateDeviceStatus(pkg map[string]interface{}) {
 			device = &DoorMagnet{Sid: sid, Name: config.GetSubDeviceNameBySid(sid), ShortId: utils.ParseInt(pkg["short_id"]), Model: pkg["model"].(string)}
 		} else if model == "motion" {
 			device = &Motion{Sid: sid, Name: config.GetSubDeviceNameBySid(sid), ShortId: utils.ParseInt(pkg["short_id"]), Model: pkg["model"].(string)}
+		} else if model == "weather.v1" {
+			device = &Weather{Sid: sid, Name: config.GetSubDeviceNameBySid(sid), ShortId: utils.ParseInt(pkg["short_id"]), Model: pkg["model"].(string)}
 		}
 		devices[sid] = device
 	}
@@ -394,7 +412,17 @@ func createOrUpdateDeviceStatus(pkg map[string]interface{}) {
 			}
 			break
 		}
+	case *Weather:
+		{
+			doorMagnet := device.(*Weather)
+			utils.ParseIntAndSetWhenNotZero(&doorMagnet.Voltage, data["voltage"])
+			utils.ParseIntAndSetWhenNotZero(&doorMagnet.Temperature, data["temperature"])
+			utils.ParseIntAndSetWhenNotZero(&doorMagnet.Humidity, data["humidity"])
+			utils.ParseIntAndSetWhenNotZero(&doorMagnet.Pressure, data["pressure"])
+			break
+		}
 	}
+
 }
 
 func GetAllDevices() string {
