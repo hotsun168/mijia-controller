@@ -4,13 +4,19 @@
 
 所有的接口都是标准的HTTP接口，可以非常容易的进行第三方系统的接入。
 
-界面：
+界面预览：
 
 ![1.png][1]
 
+获取网关信息步骤：
+
+![3.jpg][3]
+
 ## 开发计划：
 
-1. 状态有变化时通知。
+1. 状态有变化时通知。（已完成）
+2. 对接更多设备。
+
 
 ## 构建：
 
@@ -20,10 +26,11 @@
 
 ## 运行：
 
-1. 按照示例填写所需信息（iOS版米家无法获取通信密码，请使用Android客户端获取）。其中，“appInfo”为网关信息，“subDeviceInfo”为子设备信息，可直接从APP复制并粘贴到“config.json”中。
+1. 按照示例填写所需信息。其中，“appInfo”为网关信息，“subDeviceInfo”为子设备信息，可直接从APP复制并粘贴到“config.json”中。
 2. 运行编译好的二进制文件。
 3. 使用浏览器访问localhost的webServer.port，查看管理界面。
 
 
 [1]: https://github.com/hotsun168/mijia-controller/raw/master/readme_images/1.png
 [2]: https://github.com/hotsun168/mijia-controller/raw/master/readme_images/2.gif
+[3]: https://github.com/hotsun168/mijia-controller/raw/master/readme_images/3.jpg
