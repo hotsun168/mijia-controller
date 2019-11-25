@@ -15,3 +15,4 @@
 config.json
 debug
 mijia-controller_linux_amd64
+mijia-controller_linux_arm

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>test</title>
-    <link href="css/normalize/normalize.min.css" rel="stylesheet" />
+    <link href="css/normalize/normalize.min.css" rel="stylesheet"/>
     <style>
         body {
             font: 12px/1.5 Tahoma, Helvetica, Arial, '微软雅黑', sans-serif;
@@ -34,163 +34,175 @@
             border-color: grey;
             border-collapse: collapse;
             color: #666;
+            border: 1px solid #cccccc;
         }
 
         thead {
             background-color: #f2f2f2;
+            border: 1px solid #cccccc;
         }
 
         td {
             padding: 5px 20px;
+            border: 1px solid #cccccc;
         }
 
         th {
             padding: 10px 20px;
+            border: 1px solid #cccccc;
         }
     </style>
 </head>
 
 <body>
-    <h1>mijia-controller</h1>
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th>
-                        网关
-                    </th>
-                    <th>
-                        设备
-                    </th>
-                    <th>
-                        状态
-                    </th>
-                    <th>
-                        操作
-                    </th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-    <script src="/js/jquery/3.3.1/jquery.min.js"></script>
-    <!--[if lt IE 9]>
-    <script src="/js/html5shiv/html5shiv.min.js"></script>
-    <script src="/js/jquery/1.12.4/jquery.min.js"></script>
-    <![endif]-->
-    <script>
-        var gateways;
+<h1>mijia-controller</h1>
+<div class="table-wrapper">
+    <table>
+        <thead>
+        <tr>
+            <th>
+                网关
+            </th>
+            <th>
+                设备
+            </th>
+            <th>
+                状态
+            </th>
+            <th>
+                操作
+            </th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+<script src="/js/jquery/3.3.1/jquery.min.js"></script>
+<!--[if lt IE 9]>
+<script src="/js/html5shiv/html5shiv.min.js"></script>
+<script src="/js/jquery/1.12.4/jquery.min.js"></script>
+<![endif]-->
+<script>
+    var gateways;
 
-        $(function () {
-            $.get("/getDeviceStatus.do", function (json) {
-                processDeviceData(json)
-                buildTable();
-            });
+    $(function () {
+        $.get("/getDeviceStatus.do", function (json) {
+            processDeviceData(json)
+            buildTable();
         });
+    });
 
-        function processDeviceData(json) {
-            gateways = {};
-            for (var k in json) {
-                var device = json[k] || {};
-                if (device.Model == "gateway") {
-                    gateways[device.Sid] = device;
-                    device.SubDevices = $.map(device.SubDeviceSids, function (sid, i) {
-                        return json[sid];
-                    });
+    function processDeviceData(json) {
+        gateways = {};
+        for (var k in json) {
+            var device = json[k] || {};
+            if (device.Model == "gateway") {
+                gateways[device.Sid] = device;
+                device.SubDevices = $.map(device.SubDeviceSids, function (sid, i) {
+                    return json[sid];
+                });
+            }
+        }
+    }
+
+    function buildTable() {
+        for (var k in gateways) {
+            var gateway = gateways[k] || {};
+            var gatewayTr = $("<tr></tr>");
+            gatewayTr.append("<td rowspan=\"" + (gateway.SubDevices.length + 1) + "\">" + gateway.Name + "</td>")
+            gatewayTr.append("<td>" + gateway.Name + "</td>")
+            gatewayTr.append("<td>" + buildStatus(gateway) + "</td>")
+            gatewayTr.append("<td>-</td>")
+            gatewayTr.appendTo("table > tbody");
+            for (var k in gateway.SubDevices) {
+                var device = gateway.SubDevices[k] || {};
+                if (!device.Name) {
+                    continue;
                 }
+                var tr = $("<tr></tr>");
+                tr.append("<td>" + device.Name + "</td>")
+                tr.append("<td>" + buildStatus(device) + "</td>")
+                tr.append(buildOperationTd(device))
+                tr.appendTo("table > tbody");
             }
         }
+    }
 
-        function buildTable() {
-            for (var k in gateways) {
-                var gateway = gateways[k] || {};
-                var gatewayTr = $("<tr></tr>");
-                gatewayTr.append("<td rowspan=\"" + (gateway.SubDevices.length + 1) + "\">" + gateway.Name + "</td>")
-                gatewayTr.append("<td>" + gateway.Name + "</td>")
-                gatewayTr.append("<td>" + buildStatus(gateway) + "</td>")
-                gatewayTr.append("<td>-</td>")
-                gatewayTr.appendTo("table > tbody");
-                for (var k in gateway.SubDevices) {
-                    var device = gateway.SubDevices[k] || {};
-                    if (!device.Name) {
-                        continue;
-                    }
-                    var tr = $("<tr></tr>");
-                    tr.append("<td>" + device.Name + "</td>")
-                    tr.append("<td>" + buildStatus(device) + "</td>")
-                    tr.append(buildOperationTd(device))
-                    tr.appendTo("table > tbody");
-                }
+    function buildStatus(device) {
+        var status = [];
+        if (device.Ip) {
+            status.push("地址：" + device.Ip);
+        }
+        if (device.ProtoVersion) {
+            status.push("协议版本：" + device.ProtoVersion);
+        }
+        if (device.Illumination) {
+            status.push("光照度：" + device.Illumination);
+        }
+        if (device.Rgb) {
+            status.push("夜灯颜色：" + device.Rgb);
+        }
+        if (device.Voltage && device.Model != "ctrl_neutral1" && device.Model != "ctrl_neutral2") {
+            status.push("电池电压：" + device.Voltage);
+        }
+        if (device.Model == "magnet") {
+            if (device.IsOpen != undefined && device.IsOpen != null) {
+                status.push("状态：" + (device.IsOpen ? "打开" : "关闭"));
             }
         }
+        if (device.Model == "motion") {
+            motionStatus = device.NoMotionSeconds == 0 ? "无人移动" : device.NoMotionSeconds + "秒前有人移动";
+            status.push("状态：" + (device.IsMotion ? "当前有人移动" : motionStatus));
+        }
+        if (device.Model == "ctrl_neutral1") {
+            status.push("状态：" + (device.Channel0 ? "打开" : "关闭"));
+        }
+        if (device.Model == "ctrl_neutral2") {
+            status.push("左键状态：" + (device.Channel0 ? "打开" : "关闭"));
+            status.push("右键状态：" + (device.Channel1 ? "打开" : "关闭"));
+        }
+        if (device.Model == "weather.v1") {
+            status.push("电池电压：" + device.Voltage);
+            status.push("温度：" + device.Temperature);
+            status.push("湿度：" + device.Humidity);
+            status.push("气压：" + device.Pressure);
+        }
+        if (device.Model == "plug") {
+            status.push("状态：" + (device.PowerOn ? "打开" : "关闭"));
+            status.push("当前功率：" + device.Power);
+        }
+        return status.join("<br/>");
+    }
 
-        function buildStatus(device) {
-            var status = [];
-            if (device.Ip) {
-                status.push("地址：" + device.Ip);
-            }
-            if (device.ProtoVersion) {
-                status.push("协议版本：" + device.ProtoVersion);
-            }
-            if (device.Illumination) {
-                status.push("光照度：" + device.Illumination);
-            }
-            if (device.Rgb) {
-                status.push("夜灯颜色：" + device.Rgb);
-            }
-            if (device.Voltage && device.Model != "ctrl_neutral1" && device.Model != "ctrl_neutral2") {
-                status.push("电池电压：" + device.Voltage);
-            }
-            if (device.Model == "magnet") {
-                if (device.IsOpen != undefined && device.IsOpen != null) {
-                    status.push("状态：" + (device.IsOpen ? "打开" : "关闭"));
-                }
-            }
-            if (device.Model == "motion") {
-                motionStatus = device.NoMotionSeconds == 0 ? "无人移动" : device.NoMotionSeconds + "秒前有人移动";
-                status.push("状态：" + (device.IsMotion ? "当前有人移动" : motionStatus));
-            }
-            if (device.Model == "ctrl_neutral1") {
-                status.push("状态：" + (device.Channel0 ? "打开" : "关闭"));
-            }
-            if (device.Model == "ctrl_neutral2") {
-                status.push("左键状态：" + (device.Channel0 ? "打开" : "关闭"));
-                status.push("右键状态：" + (device.Channel1 ? "打开" : "关闭"));
-            }
-            if (device.Model == "weather.v1") {
-                status.push("电池电压：" + device.Voltage);
-                status.push("温度" + device.Temperature);
-                status.push("湿度：" + device.Humidity);
-                status.push("气压：" + device.Pressure);
-            }
-            return status.join("<br/>");
+    function buildOperationTd(device) {
+        var td = $("<td></td>");
+        if (device.Model == "ctrl_neutral1") {
+            var btn1 = $("<button onclick=\"setSwitchStatus('" + device.Sid + "','0'," + (device.Channel0 ? "false" : "true") + ")\"></button>").html(device.Channel0 ? "关闭" : "打开");
+            td.append(btn1);
         }
+        if (device.Model == "ctrl_neutral2") {
+            var btn1 = $("<button onclick=\"setSwitchStatus('" + device.Sid + "','0'," + (device.Channel0 ? "false" : "true") + ")\"></button>").html(device.Channel0 ? "左键关闭" : "左键打开");
+            var btn2 = $("<button onclick=\"setSwitchStatus('" + device.Sid + "','1'," + (device.Channel1 ? "false" : "true") + ")\"></button>").html(device.Channel1 ? "右键关闭" : "右键打开");
+            td.append(btn1);
+            td.append(btn2);
+        }
+        if (device.Model == "plug") {
+            var btn1 = $("<button onclick=\"setSwitchStatus('" + device.Sid + "','0'," + (device.PowerOn ? "false" : "true") + ")\"></button>").html(device.PowerOn ? "关闭" : "打开");
+            td.append(btn1);
+        }
+        return td;
+    }
 
-        function buildOperationTd(device) {
-            var td = $("<td></td>");
-            if (device.Model == "ctrl_neutral1") {
-                var btn1 = $("<button onclick=\"setSwitchStatus('" + device.Sid + "','0'," + (device.Channel0 ? "false" : "true") + ")\"></button>").html(device.Channel0 ? "关闭" : "打开");
-                td.append(btn1);
-            }
-            if (device.Model == "ctrl_neutral2") {
-                var btn1 = $("<button onclick=\"setSwitchStatus('" + device.Sid + "','0'," + (device.Channel0 ? "false" : "true") + ")\"></button>").html(device.Channel0 ? "左键关闭" : "左键打开");
-                var btn2 = $("<button onclick=\"setSwitchStatus('" + device.Sid + "','1'," + (device.Channel1 ? "false" : "true") + ")\"></button>").html(device.Channel1 ? "右键关闭" : "右键打开");
-                td.append(btn1);
-                td.append(btn2);
-            }
-            return td;
-        }
-
-        function setSwitchStatus(sid, index, on) {
-            $.post("/setSwitchStatus.do", {
-                sid: sid,
-                index: index,
-                on: on
-            }, function (json) {
-                window.location.href = window.location.href;
-            });
-        }
-    </script>
+    function setSwitchStatus(sid, index, on) {
+        $.post("/setSwitchStatus.do", {
+            sid: sid,
+            index: index,
+            on: on
+        }, function (json) {
+            window.location.href = window.location.href;
+        });
+    }
+</script>
 </body>
 
 </html>

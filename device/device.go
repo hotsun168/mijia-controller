@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -151,6 +152,22 @@ type Weather struct {
 	Humidity int
 	//气压。
 	Pressure int
+}
+
+//小米无线开关ZigBee版。
+type Plug struct {
+	Sid     string
+	Name    string
+	ShortId int
+	Model   string
+	//（未知）
+	InUse bool
+	//电池电压。
+	Voltage int
+	//接通状态。
+	PowerOn bool
+	//功率。
+	Power float64
 }
 
 //Device操作锁。
@@ -338,6 +355,8 @@ func createOrUpdateDeviceStatus(pkg map[string]interface{}) {
 			device = &Motion{Sid: sid, Name: config.GetSubDeviceNameBySid(sid), ShortId: utils.ParseInt(pkg["short_id"]), Model: pkg["model"].(string)}
 		} else if model == "weather.v1" {
 			device = &Weather{Sid: sid, Name: config.GetSubDeviceNameBySid(sid), ShortId: utils.ParseInt(pkg["short_id"]), Model: pkg["model"].(string)}
+		} else if model == "plug" {
+			device = &Plug{Sid: sid, Name: config.GetSubDeviceNameBySid(sid), ShortId: utils.ParseInt(pkg["short_id"]), Model: pkg["model"].(string)}
 		}
 		devices[sid] = device
 	}
@@ -414,15 +433,25 @@ func createOrUpdateDeviceStatus(pkg map[string]interface{}) {
 		}
 	case *Weather:
 		{
-			doorMagnet := device.(*Weather)
-			utils.ParseIntAndSetWhenNotZero(&doorMagnet.Voltage, data["voltage"])
-			utils.ParseIntAndSetWhenNotZero(&doorMagnet.Temperature, data["temperature"])
-			utils.ParseIntAndSetWhenNotZero(&doorMagnet.Humidity, data["humidity"])
-			utils.ParseIntAndSetWhenNotZero(&doorMagnet.Pressure, data["pressure"])
+			weather := device.(*Weather)
+			utils.ParseIntAndSetWhenNotZero(&weather.Voltage, data["voltage"])
+			utils.ParseIntAndSetWhenNotZero(&weather.Temperature, data["temperature"])
+			utils.ParseIntAndSetWhenNotZero(&weather.Humidity, data["humidity"])
+			utils.ParseIntAndSetWhenNotZero(&weather.Pressure, data["pressure"])
+			break
+		}
+	case *Plug:
+		{
+			plug := device.(*Plug)
+			plug.PowerOn = utils.ParseStringDef(data["status"], "off") == "on"
+			powerString := utils.ParseStringDef(data["load_power"], "0")
+			f, err := strconv.ParseFloat(powerString, 64)
+			if err == nil {
+				plug.Power = f
+			}
 			break
 		}
 	}
-
 }
 
 func GetAllDevices() string {
@@ -462,6 +491,13 @@ func SetSwitchStatus(sid string, btnIndex int, on bool) bool {
 		{
 			ctrlNeutral2 := device.(*CtrlNeutral2)
 			model = ctrlNeutral2.Model
+			break
+		}
+	case *Plug:
+		{
+			plug := device.(*Plug)
+			model = plug.Model
+			btnStr = "status"
 			break
 		}
 	}
