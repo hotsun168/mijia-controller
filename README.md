@@ -41,3 +41,10 @@
 net.ipv4.all.rp_filter = 0
 net.ipv4.eth0.rp_filter = 0
 ```
+
+修改完配置后需要重启网络服务：
+```
+service networking restart
+```
+
+或直接重启机器。
