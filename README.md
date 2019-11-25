@@ -35,7 +35,7 @@
 [2]: https://github.com/hotsun168/mijia-controller/raw/master/readme_images/2.gif
 [3]: https://github.com/hotsun168/mijia-controller/raw/master/readme_images/3.jpg
 
-##Tips：
+## Tips：
 1. 如果部署在Linux上的服务收不到whois包的回应，可以尝试在/etc/sysctl.conf中加入如下配置（其中eth0代表接收UDP组播包的网卡）：
 ```
 net.ipv4.all.rp_filter = 0
