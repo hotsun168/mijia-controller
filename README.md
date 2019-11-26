@@ -4,13 +4,9 @@
 
 所有的接口都是标准的HTTP接口，可以非常容易的进行第三方系统的接入。
 
-界面预览：
-
-![1.png][1]
-
 获取网关信息步骤：
 
-![3.jpg][3]
+![1.gif][1]
 
 ## 开发计划：
 
@@ -31,9 +27,7 @@
 3. 使用浏览器访问localhost的webServer.port，查看管理界面。
 
 
-[1]: https://github.com/hotsun168/mijia-controller/raw/master/readme_images/1.png
-[2]: https://github.com/hotsun168/mijia-controller/raw/master/readme_images/2.gif
-[3]: https://github.com/hotsun168/mijia-controller/raw/master/readme_images/3.jpg
+[1]: https://github.com/hotsun168/mijia-controller/raw/master/readme_images/1.gif
 
 ## Tips：
 1. 如果部署在Linux上的服务收不到whois包的回应，可以尝试在/etc/sysctl.conf中加入如下配置（其中eth0代表接收UDP组播包的网卡）：
