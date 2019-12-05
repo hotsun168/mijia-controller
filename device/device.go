@@ -138,7 +138,7 @@ type Motion struct {
 	IsMotion bool
 }
 
-//Aqara温湿度度传感器。
+//Aqara温湿度度传感器（圆角方形）。
 type Weather struct {
 	Sid     string
 	Name    string
@@ -168,6 +168,20 @@ type Plug struct {
 	PowerOn bool
 	//功率。
 	Power float64
+}
+
+//小米温湿度传感器（圆形）。
+type SensorHt struct {
+	Sid     string
+	Name    string
+	ShortId int
+	Model   string
+	//电池电压。
+	Voltage int
+	//温度。
+	Temperature int
+	//湿度。
+	Humidity int
 }
 
 //Device操作锁。
@@ -357,6 +371,8 @@ func createOrUpdateDeviceStatus(pkg map[string]interface{}) {
 			device = &Weather{Sid: sid, Name: config.GetSubDeviceNameBySid(sid), ShortId: utils.ParseInt(pkg["short_id"]), Model: pkg["model"].(string)}
 		} else if model == "plug" {
 			device = &Plug{Sid: sid, Name: config.GetSubDeviceNameBySid(sid), ShortId: utils.ParseInt(pkg["short_id"]), Model: pkg["model"].(string)}
+		} else if model == "sensor_ht" {
+			device = &SensorHt{Sid: sid, Name: config.GetSubDeviceNameBySid(sid), ShortId: utils.ParseInt(pkg["short_id"]), Model: pkg["model"].(string)}
 		}
 		devices[sid] = device
 	}
@@ -449,6 +465,14 @@ func createOrUpdateDeviceStatus(pkg map[string]interface{}) {
 			if err == nil {
 				plug.Power = f
 			}
+			break
+		}
+	case *SensorHt:
+		{
+			sensorHt := device.(*SensorHt)
+			utils.ParseIntAndSetWhenNotZero(&sensorHt.Voltage, data["voltage"])
+			utils.ParseIntAndSetWhenNotZero(&sensorHt.Temperature, data["temperature"])
+			utils.ParseIntAndSetWhenNotZero(&sensorHt.Humidity, data["humidity"])
 			break
 		}
 	}
