@@ -4,6 +4,7 @@ import (
 	"../config"
 	"../utils"
 	"container/list"
+	"log"
 	"sync"
 	"time"
 )
@@ -40,6 +41,7 @@ func PushMessage(message string) {
 
 func doCall(message string) {
 	for _, u := range urls {
-		utils.HttpPostJson(u, message)
+		result := utils.HttpPostJson(u, message)
+		log.Printf("notify to %s, message: %s, result: %s", u, message, result)
 	}
 }

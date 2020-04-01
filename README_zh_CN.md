@@ -1,10 +1,8 @@
-[中文文档](README_zh_CN.md)
+# 米家控制器
 
-# Mijia Controller
+本程序可以在页面上查看网关和属于该网关的某些子设备的信息和状态，并对某些子设备（如墙壁开关等）进行状态切换，还可网关广播的信息转发到指定URL，以实现第三方系统的对接。
 
-This program can view the web page which contains information and status of some sub devices which belongs to a Mijia gateway. It also supply the way that can controll or switch the status of some sub devices (such as the wall switch). There is a forwarder in this program which can transfer the gateway's broadcast message to the specified URL. 
-
-All the API is standard HTTP API so that it can be integrated to another system conveniently. 
+所有的接口都是标准的HTTP接口，可以非常容易的进行第三方系统的接入。
 
 **注：获取网关信息时必须使用安卓手机的米家客户端进行获取。**
 
