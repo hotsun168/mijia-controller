@@ -6,43 +6,42 @@ This program can view the web page which contains information and status of some
 
 All the API is standard HTTP API so that it can be integrated to another system conveniently. 
 
-**注：获取网关信息时必须使用安卓手机的米家客户端进行获取。**
+**Tip: You have to use Android phone to get the gateway information in the Mijia APP.**
 
-获取网关信息步骤：
+The steps to get the gateway information:
 
 ![1.gif][1]
 
-## 开发计划：
+## Development plan: 
 
-1. 状态有变化时通知。（已完成）
-2. 对接更多设备。
+1. Make a notification when the status of any sub devices changed. (completed)
+2. Support more sub devices. 
 
 
-## 构建：
+## Building steps: 
 
-1. git clone 本仓库。
-2. 检查并go get未安装的包。
-3. go build main.go bindata.go
+1. use "git clone" to clone this repository. 
+2. use "go get" to setup all the package which are not installed. 
+3. use "go build main.go bindata.go" to build this program. 
 
-## 运行：
+## Launching steps: 
 
-1. 按照示例填写所需信息。其中，“appInfo”为网关信息，“subDeviceInfo”为子设备信息，可直接从APP复制并粘贴到“config.json”中。
-2. 运行编译好的二进制文件。
-3. 使用浏览器访问localhost的webServer.port，查看管理界面。
-
+1. Write the configration content into the config file. In the config file, "appInfo" is gateway information, "subDeviceInfo" is sub devices information. These two parts of config can be copied from the Mijia app and pasted into the "config.json" file. 
+2. Launch the builded binary file.
+3. visit "http://localhost:${webServer.port}", then you can see the dashboard page. 
 
 [1]: https://github.com/hotsun168/mijia-controller/raw/master/readme_images/1.gif
 
 ## Tips：
-1. 如果部署在Linux上的服务收不到whois包的回应，可以尝试在/etc/sysctl.conf中加入如下配置（其中eth0代表接收UDP组播包的网卡）：
+1. If this program cannot receive the "whois" response package, you can try to add the below config lines into "/etc/sysctl.conf", the "eth0" is the name of which network adapter is specified to receive the UDP multicasting package. 
 ```
 net.ipv4.all.rp_filter = 0
 net.ipv4.eth0.rp_filter = 0
 ```
 
-修改完配置后需要重启网络服务：
+You should restart the networking service when finishing changing the config. 
 ```
 service networking restart
 ```
 
-或直接重启机器。
+Also you can reboot the OS directly. 
