@@ -4,14 +4,26 @@ import (
 	"../config"
 	"../device"
 	"../utils"
+	"../webSocket"
 	"encoding/base64"
 	"fmt"
 	"github.com/elazarl/go-bindata-assetfs"
+	"github.com/gorilla/websocket"
 	"net/http"
 	"strings"
 )
 
 func StartWebServer(fs *assetfs.AssetFS, port int) {
+	var upgrader = websocket.Upgrader{CheckOrigin: func(r *http.Request) bool {
+		return true
+	}}
+	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		c, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			return
+		}
+		go webSocket.HandleWebSocket(c)
+	})
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if !checkAuthentication(w, r) {
 			return

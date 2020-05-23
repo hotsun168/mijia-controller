@@ -3,6 +3,7 @@ package notify
 import (
 	"../config"
 	"../utils"
+	"../webSocket"
 	"container/list"
 	"log"
 	"sync"
@@ -44,4 +45,5 @@ func doCall(message string) {
 		result := utils.HttpPostJson(u, message)
 		log.Printf("notify to %s, message: %s, result: %s", u, message, result)
 	}
+	webSocket.WebSocketBroadcast(message)
 }

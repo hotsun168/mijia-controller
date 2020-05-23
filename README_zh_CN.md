@@ -4,6 +4,8 @@
 
 所有的接口都是标准的HTTP接口，可以非常容易的进行第三方系统的接入。
 
+内置WebSocket服务器，可将网关发出的所有数据包广播到WebSocket客户端。
+
 **注：获取网关信息时必须使用安卓手机的米家客户端进行获取。**
 
 获取网关信息步骤：
@@ -26,8 +28,10 @@
 
 1. 按照示例填写所需信息。其中，“appInfo”为网关信息，“subDeviceInfo”为子设备信息，可直接从APP复制并粘贴到“config.json”中。
 2. 运行编译好的二进制文件。
-3. 使用浏览器访问localhost的webServer.port，查看管理界面。
+3. 使用浏览器访问"http://localhost:${webServer.port}"，查看管理界面。
 
+## WebSocket接入：
+使用各种标准WebSocket客户端连接至“ws://localhost:${webServer.port}/ws”，即可收到JSON格式的数据包。
 
 [1]: https://github.com/hotsun168/mijia-controller/raw/master/readme_images/1.gif
 

@@ -6,6 +6,8 @@ This program can view the web page which contains information and status of some
 
 All the API is standard HTTP API so that it can be integrated to another system conveniently. 
 
+It supply the WebSocket server to broadcasting all gateway's data packages to each WebSocket client.  
+
 **Tip: You have to use Android phone to get the gateway information in the Mijia APP.**
 
 The steps to get the gateway information:
@@ -29,6 +31,9 @@ The steps to get the gateway information:
 1. Write the configration content into the config file. In the config file, "appInfo" is gateway information, "subDeviceInfo" is sub devices information. These two parts of config can be copied from the Mijia app and pasted into the "config.json" file. 
 2. Launch the builded binary file.
 3. visit "http://localhost:${webServer.port}", then you can see the dashboard page. 
+
+## WebSocket:
+Connect to "ws://localhost:${webServer.port}/ws" with WebSocket client, then it will received the data packages in JSON format. 
 
 [1]: https://github.com/hotsun168/mijia-controller/raw/master/readme_images/1.gif
 
