@@ -2,7 +2,7 @@
 
 # Mijia Controller
 
-This program can view the web page which contains information and status of some sub devices which belongs to a Mijia gateway. It also supply the way that can controll or switch the status of some sub devices (such as the wall switch). There is a forwarder in this program which can transfer the gateway's broadcast message to the specified URL. 
+This program contains a web page which contains Mijia gateway's information and status of some sub devices which belongs to the gateway. It also supply the way that can control or switch the status of some sub devices (such as the wall switch). There is a forwarder in this program which can transfer the gateway's broadcast message to the specified URL. 
 
 All the API is standard HTTP API so that it can be integrated to another system conveniently. 
 
