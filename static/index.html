@@ -109,7 +109,14 @@
         for (var k in gateways) {
             var gateway = gateways[k] || {};
             var gatewayTr = $("<tr></tr>");
-            gatewayTr.append("<td rowspan=\"" + (gateway.SubDevices.length + 1) + "\">" + gateway.Name + "</td>")
+            var rowspan = 1;
+            for (var k in gateway.SubDevices) {
+                var device = gateway.SubDevices[k] || {};
+                if (device.Name) {
+                    ++rowspan;
+                }
+            }
+            gatewayTr.append("<td rowspan=\"" + rowspan + "\">" + gateway.Name + "</td>")
             gatewayTr.append("<td>" + gateway.Name + "</td>")
             gatewayTr.append("<td>" + buildStatus(gateway) + "</td>")
             gatewayTr.append("<td>-</td>")
