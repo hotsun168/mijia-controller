@@ -36,7 +36,7 @@ func StartWebServer(fs *assetfs.AssetFS, port int) {
 			}
 			//路由。
 			if strings.HasSuffix(path, ".html") {
-				data, _ := fs.Asset("static" + path)
+				data, _ := fs.Asset("res" + path)
 				html := string(data)
 				w.Header().Add("Content-Type", "text/html; charset=UTF-8")
 				w.Write([]byte(html))
@@ -59,7 +59,7 @@ func StartWebServer(fs *assetfs.AssetFS, port int) {
 				w.Header().Add("Content-Type", "text/css; charset=UTF-8")
 			}
 
-			data, _ := fs.Asset("static" + path)
+			data, _ := fs.Asset("res" + path)
 			w.Write(data)
 		}
 	})
